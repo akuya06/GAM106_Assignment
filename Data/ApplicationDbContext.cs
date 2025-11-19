@@ -1,64 +1,81 @@
 using Microsoft.EntityFrameworkCore;
 using WebApplication1.Models;
 
-namespace WebApplication1.Data;
-
-public class ApplicationDbContext : DbContext
+namespace WebApplication1.Data
 {
-    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-        : base(options)
+    public class ApplicationDbContext : DbContext
     {
-    }
-
-    public DbSet<User> Users { get; set; }
-
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-        base.OnModelCreating(modelBuilder);
-
-        modelBuilder.Entity<Region>(entity =>
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+            : base(options)
         {
-            entity.HasKey(e => e.regionId);
-            entity.Property(e => e.Name).IsRequired();
-        });
-        modelBuilder.Entity<Role>(entity =>
+        }
+
+        public DbSet<Account> Accounts { get; set; }
+        public DbSet<GameMode> GameModes { get; set; }
+        public DbSet<Player> Players { get; set; }
+        public DbSet<Item> Items { get; set; }
+        public DbSet<Shop> Shop { get; set; }
+        public DbSet<Monster> Monsters { get; set; }
+        public DbSet<Quest> Quests { get; set; }
+        public DbSet<Resource> Resources { get; set; }
+        public DbSet<Recipe> Recipes { get; set; }
+        public DbSet<PlayerMonsterKill> PlayerMonsterKills { get; set; }
+        public DbSet<PlayerInventory> PlayerInventory { get; set; }
+        public DbSet<PlayerQuest> PlayerQuests { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            entity.HasKey(e => e.roleId);
-            entity.Property(e => e.Name).IsRequired();
-        });
-        // Optional: Configure your entity here
-        modelBuilder.Entity<User>(entity =>
-        {
-            entity.HasKey(e => e.userId);
-            entity.Property(e => e.username).IsRequired();
-            entity.Property(e => e.linkAvatar);
-            entity.Property(e => e.otp);
+            base.OnModelCreating(modelBuilder);
 
-            entity.HasOne(e => e.region)
-                  .WithMany(r => r.Users)
-                  .HasForeignKey("regionId")
-                  .IsRequired();
+            modelBuilder.Entity<PlayerMonsterKill>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.HasOne(e => e.Player)
+                      .WithMany(p => p.MonsterKills)
+                      .HasForeignKey(e => e.PlayerId)
+                      .OnDelete(DeleteBehavior.Cascade);
 
-            entity.HasOne(e => e.role)
-                  .WithMany(r => r.Users)
-                  .HasForeignKey("roleId")
-                  .IsRequired();
-        });
-        
+                entity.HasOne(e => e.Monster)
+                      .WithMany()
+                      .HasForeignKey(e => e.MonsterId)
+                      .OnDelete(DeleteBehavior.SetNull);
+            });
 
+            modelBuilder.Entity<Account>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Username).IsRequired().HasMaxLength(100);
+                entity.Property(e => e.Email).IsRequired().HasMaxLength(200);
+                entity.Property(e => e.PasswordHash).IsRequired();
+            });
 
-        // Optional: Seed some data
-        modelBuilder.Entity<Region>().HasData(
-            new Region(1, "Region1"),
-            new Region(2, "Region2")
-        );
-        modelBuilder.Entity<Role>().HasData(
-            new Role(1, "Admin"),
-            new Role(2, "User")
-        );
-        modelBuilder.Entity<User>().HasData(
-            new { userId = 1, username = "user1", linkAvatar = "avatar1.png", otp = 123456, regionId = 1, roleId = 1 },
-            new { userId = 2, username = "user2", linkAvatar = "avatar2.png", otp = 654321, regionId = 2, roleId = 2 }
-        );
+            // PlayerInventory uses Id as PK (model defines Id)
+            modelBuilder.Entity<PlayerInventory>(entity =>
+            {
+                entity.HasKey(pi => pi.Id);
+                entity.Property(pi => pi.Quantity).IsRequired();
+                entity.HasOne(pi => pi.Player)
+                      .WithMany(p => p.PlayerInventory)
+                      .HasForeignKey(pi => pi.PlayerId)
+                      .OnDelete(DeleteBehavior.Cascade);
+                // optional navigations to Item/Resource left as-is (nullable)
+            });
+
+            // PlayerQuest uses Id as PK (model defines Id)
+            modelBuilder.Entity<PlayerQuest>(entity =>
+            {
+                entity.HasKey(pq => pq.Id);
+                entity.HasOne(pq => pq.Player)
+                      .WithMany(p => p.PlayerQuests)
+                      .HasForeignKey(pq => pq.PlayerId)
+                      .OnDelete(DeleteBehavior.Cascade);
+                entity.HasOne(pq => pq.Quest)
+                      .WithMany()
+                      .HasForeignKey(pq => pq.QuestId)
+                      .OnDelete(DeleteBehavior.SetNull);
+            });
+
+            // Additional configurations can be added here
+        }
     }
 }

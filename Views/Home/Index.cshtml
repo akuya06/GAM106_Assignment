@@ -1,8 +1,21 @@
-﻿@model List<WebApplication1.Models.User>
+﻿@model IEnumerable<WebApplication1.Models.Account>
 
 @{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Home";
 }
+
+<h1>Home</h1>
+
+<!-- Local embedded image (served from wwwroot/images) -->
+<img src="@(Url.Content("~/images/diagram.png"))" alt="Diagram" style="max-width:100%;height:auto;border:1px solid #ccc;" />
+
+<!-- Embedded Eraser preview -->
+<a href="https://app.eraser.io/workspace/JESbT63tPVDJIU9TjDXz?elements=o4UarAUmQA693WvhsMcVxA" target="_blank" rel="noopener">
+    View on Eraser<br />
+    <img src="https://app.eraser.io/workspace/JESbT63tPVDJIU9TjDXz/preview?elements=o4UarAUmQA693WvhsMcVxA&type=embed"
+         alt="Eraser preview"
+         style="max-width:100%;height:auto;border:1px solid #ccc;" />
+</a>
 
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
@@ -10,25 +23,32 @@
 </div>
 
 <div class="container mt-4">
-    <h2>Users from Database</h2>
+    <h2>Accounts</h2>
     <table class="table table-striped">
         <thead>
             <tr>
-                <th>ID</th>
+                <th>Id</th>
                 <th>Username</th>
                 <th>Email</th>
-                <th>OTP</th>
+                <th>Created At</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var user in Model)
+            @if (Model != null && Model.Any())
             {
-                <tr>
-                    <td>@user.userId</td>
-                    <td>@user.username</td>
-                    <td>@user.linkAvatar</td>
-                    <td>@user.otp</td>
-                </tr>
+                @foreach (var acct in Model)
+                {
+                    <tr>
+                        <td>@acct.Id</td>
+                        <td>@acct.Username</td>
+                        <td>@acct.Email</td>
+                        <td>@(acct.CreatedAt?.ToString("u") ?? "")</td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr><td colspan="4">No accounts</td></tr>
             }
         </tbody>
     </table>

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebApplication1.Data;
 
@@ -10,9 +11,11 @@ using WebApplication1.Data;
 namespace WebApplication1.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251116090339_ResetDB")]
+    partial class ResetDB
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.10");
@@ -341,29 +344,6 @@ namespace WebApplication1.Migrations
                     b.ToTable("Accounts");
                 });
 
-            modelBuilder.Entity("WebApplication1.Models.PlayerMonsterKill", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime?>("KilledAt")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("MonsterId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("PlayerId")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("MonsterId");
-
-                    b.HasIndex("PlayerId");
-
-                    b.ToTable("PlayerMonsterKills");
-                });
-
             modelBuilder.Entity("Monster", b =>
                 {
                     b.HasOne("Item", "RewardItem")
@@ -475,23 +455,6 @@ namespace WebApplication1.Migrations
                     b.Navigation("Item");
                 });
 
-            modelBuilder.Entity("WebApplication1.Models.PlayerMonsterKill", b =>
-                {
-                    b.HasOne("Monster", "Monster")
-                        .WithMany()
-                        .HasForeignKey("MonsterId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.HasOne("Player", "Player")
-                        .WithMany("MonsterKills")
-                        .HasForeignKey("PlayerId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.Navigation("Monster");
-
-                    b.Navigation("Player");
-                });
-
             modelBuilder.Entity("GameMode", b =>
                 {
                     b.Navigation("Players");
@@ -512,8 +475,6 @@ namespace WebApplication1.Migrations
 
             modelBuilder.Entity("Player", b =>
                 {
-                    b.Navigation("MonsterKills");
-
                     b.Navigation("PlayerInventory");
 
                     b.Navigation("PlayerQuests");
