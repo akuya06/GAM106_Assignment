@@ -1,4 +1,4 @@
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using WebApplication1.Models;
 using WebApplication1.Data;
@@ -19,9 +19,9 @@ public class HomeController : Controller
 
     public async Task<IActionResult> Index()
     {
-        // Example: Get all users from database
-        var users = await _context.Users.ToListAsync();
-        return View(users);
+        // Use Accounts (Account model exists) instead of Users
+        var accounts = await _context.Accounts.ToListAsync();
+        return View(accounts);
     }
 
     public IActionResult Privacy()
@@ -34,4 +34,10 @@ public class HomeController : Controller
     {
         return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
     }
+
+    public IActionResult RedirectToSwagger()
+    {
+        return Redirect("/swagger");
+    }
 }
+

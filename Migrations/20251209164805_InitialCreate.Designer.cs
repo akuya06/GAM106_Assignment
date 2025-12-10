@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebApplication1.Data;
 
@@ -10,9 +11,11 @@ using WebApplication1.Data;
 namespace WebApplication1.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251209164805_InitialCreate")]
+    partial class InitialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.10");
@@ -154,12 +157,10 @@ namespace WebApplication1.Migrations
 
             modelBuilder.Entity("WebApplication1.Models.Player", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("Id")
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("AccountId")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime?>("CreatedAt")
@@ -188,19 +189,17 @@ namespace WebApplication1.Migrations
 
             modelBuilder.Entity("WebApplication1.Models.PlayerInventory", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("Id")
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("ItemId")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<int>("Kind")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("PlayerId")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("PlayerId")
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("INTEGER");
@@ -224,22 +223,17 @@ namespace WebApplication1.Migrations
 
             modelBuilder.Entity("WebApplication1.Models.PlayerMonsterKill", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("KillCount")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("Id")
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime?>("KilledAt")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("MonsterId")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("PlayerId")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("PlayerId")
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
@@ -258,8 +252,8 @@ namespace WebApplication1.Migrations
                     b.Property<DateTime?>("CompletedAt")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("PlayerId")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("PlayerId")
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("QuestId")
                         .HasColumnType("TEXT");
@@ -370,8 +364,8 @@ namespace WebApplication1.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("PlayerId")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("PlayerId")
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("PricePaid")
                         .HasColumnType("INTEGER");
@@ -380,7 +374,6 @@ namespace WebApplication1.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("ShopId")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
@@ -405,9 +398,7 @@ namespace WebApplication1.Migrations
                 {
                     b.HasOne("WebApplication1.Models.Account", "Account")
                         .WithMany("Players")
-                        .HasForeignKey("AccountId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("AccountId");
 
                     b.HasOne("WebApplication1.Models.GameMode", "CurrentMode")
                         .WithMany("Players")
@@ -422,15 +413,12 @@ namespace WebApplication1.Migrations
                 {
                     b.HasOne("WebApplication1.Models.Item", "Item")
                         .WithMany()
-                        .HasForeignKey("ItemId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ItemId");
 
                     b.HasOne("WebApplication1.Models.Player", "Player")
                         .WithMany("PlayerInventory")
                         .HasForeignKey("PlayerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Resource", "Resource")
                         .WithMany()
@@ -448,14 +436,12 @@ namespace WebApplication1.Migrations
                     b.HasOne("WebApplication1.Models.Monster", "Monster")
                         .WithMany()
                         .HasForeignKey("MonsterId")
-                        .OnDelete(DeleteBehavior.SetNull)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("WebApplication1.Models.Player", "Player")
                         .WithMany("MonsterKills")
                         .HasForeignKey("PlayerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Monster");
 
@@ -467,8 +453,7 @@ namespace WebApplication1.Migrations
                     b.HasOne("WebApplication1.Models.Player", "Player")
                         .WithMany("PlayerQuests")
                         .HasForeignKey("PlayerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("WebApplication1.Models.Quest", "Quest")
                         .WithMany()
@@ -527,14 +512,12 @@ namespace WebApplication1.Migrations
                     b.HasOne("WebApplication1.Models.Player", "Player")
                         .WithMany()
                         .HasForeignKey("PlayerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("WebApplication1.Models.Shop", "Shop")
                         .WithMany()
                         .HasForeignKey("ShopId")
-                        .OnDelete(DeleteBehavior.SetNull)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("Player");
 

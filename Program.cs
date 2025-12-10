@@ -1,8 +1,18 @@
 using Microsoft.EntityFrameworkCore;
 using WebApplication1.Data;
+using System.IO;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// build an absolute path so both dotnet-ef and runtime use the same file
+var dbPath = Path.Combine(builder.Environment.ContentRootPath, "Data", "app.db");
+Directory.CreateDirectory(Path.GetDirectoryName(dbPath)!);
+
+Console.WriteLine($"Using SQLite DB at: {dbPath}");
+
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlite($"Data Source={dbPath}"));
 
 // Add services to the container.
 builder.Services.AddControllersWithViews()
@@ -11,42 +21,53 @@ builder.Services.AddControllersWithViews()
         options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
     });
 
-// Configure Entity Framework Core with SQLite
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
-
 // Add Swagger/OpenAPI
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll",
+        policy =>
+        {
+            policy.AllowAnyOrigin()
+                  .AllowAnyMethod()
+                  .AllowAnyHeader();
+        });
+});
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
+// Seed data
+using (var scope = app.Services.CreateScope())
 {
-    app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
+    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    db.Database.EnsureCreated();
+    DataSeeder.Seed(db);
 }
 
-// Enable Swagger in development
+// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+else
+{
+    app.UseHttpsRedirection();
+}
 
-app.UseHttpsRedirection();
+app.UseStaticFiles(); // Serve static files (CSS, JS, images)
 app.UseRouting();
-
+app.UseCors("AllowAll");
 app.UseAuthorization();
 
-app.MapStaticAssets();
-
+// Map MVC routes (cho Views)
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}")
-    .WithStaticAssets();
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
+// Map API controllers
+app.MapControllers();
 
 app.Run();

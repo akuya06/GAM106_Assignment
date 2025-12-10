@@ -1,8 +1,21 @@
-﻿@model List<WebApplication1.Models.User>
+﻿@model IEnumerable<WebApplication1.Models.Player>
 
 @{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Home - Players";
 }
+
+<h1>Home</h1>
+
+<!-- Local embedded image (served from wwwroot/images) -->
+<img src="@(Url.Content("~/images/diagram.png"))" alt="Diagram" style="max-width:100%;height:auto;border:1px solid #ccc;" />
+
+<!-- Embedded Eraser preview -->
+<a href="https://app.eraser.io/workspace/JESbT63tPVDJIU9TjDXz?elements=o4UarAUmQA693WvhsMcVxA" target="_blank" rel="noopener">
+    View on Eraser<br />
+    <img src="https://app.eraser.io/workspace/JESbT63tPVDJIU9TjDXz/preview?elements=o4UarAUmQA693WvhsMcVxA&type=embed"
+         alt="Eraser preview"
+         style="max-width:100%;height:auto;border:1px solid #ccc;" />
+</a>
 
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
@@ -10,26 +23,57 @@
 </div>
 
 <div class="container mt-4">
-    <h2>Users from Database</h2>
-    <table class="table table-striped">
-        <thead>
+    <h2>Players List</h2>
+    <table class="table table-striped table-bordered">
+        <thead class="table-dark">
             <tr>
                 <th>ID</th>
                 <th>Username</th>
                 <th>Email</th>
-                <th>OTP</th>
+                <th>Realm</th>
+                <th>Hunger</th>
+                <th>XP</th>
+                <th>Current Mode</th>
+                <th>Created At</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var user in Model)
+            @if (Model != null && Model.Any())
+            {
+                @foreach (var player in Model)
+                {
+                    <tr>
+                        <td>@player.Id</td>
+                        <td>@player.Account?.Username</td>
+                        <td>@player.Account?.Email</td>
+                        <td>@player.Realm</td>
+                        <td>@player.Hunger</td>
+                        <td><span class="badge bg-success">@player.Xp XP</span></td>
+                        <td>@player.CurrentMode?.Name</td>
+                        <td>@(player.CreatedAt?.ToString("dd/MM/yyyy HH:mm") ?? "")</td>
+                    </tr>
+                }
+            }
+            else
             {
                 <tr>
-                    <td>@user.userId</td>
-                    <td>@user.username</td>
-                    <td>@user.linkAvatar</td>
-                    <td>@user.otp</td>
+                    <td colspan="8" class="text-center text-muted">No players found</td>
                 </tr>
             }
         </tbody>
     </table>
 </div>
+
+<div class="mt-4">
+    <a href="/swagger" class="btn btn-primary">Open API Documentation</a>
+    <a href="/api/player" class="btn btn-secondary">View Players API</a>
+</div>
+
+<style>
+    .table {
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .badge {
+        font-size: 0.9em;
+    }
+</style>
