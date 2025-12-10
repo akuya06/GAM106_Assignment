@@ -35,5 +35,26 @@ public class ItemController : ControllerBase
         await _context.SaveChangesAsync();
         return CreatedAtAction(nameof(Get), new { id = model.Id }, model);
     }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteItem(string id)
+    {
+        // Xóa liên kết ở Shop
+        var shops = await _context.Shops.Where(s => s.ItemId == id).ToListAsync();
+        if (shops.Any()) _context.Shops.RemoveRange(shops);
+
+        // Xóa liên kết ở PlayerInventory
+        var inventories = await _context.PlayerInventory.Where(pi => pi.ItemId == id).ToListAsync();
+        if (inventories.Any()) _context.PlayerInventory.RemoveRange(inventories);
+
+        // Xóa Item
+        var item = await _context.Items.FindAsync(id);
+        if (item == null) return NotFound();
+
+        _context.Items.Remove(item);
+        await _context.SaveChangesAsync();
+
+        return Ok(new { message = "Item deleted" });
+    }
 }
 

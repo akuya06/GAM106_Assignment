@@ -1,7 +1,7 @@
-﻿@model IEnumerable<WebApplication1.Models.Account>
+﻿@model IEnumerable<WebApplication1.Models.Player>
 
 @{
-    ViewData["Title"] = "Home";
+    ViewData["Title"] = "Home - Players";
 }
 
 <h1>Home</h1>
@@ -23,33 +23,57 @@
 </div>
 
 <div class="container mt-4">
-    <h2>Accounts</h2>
-    <table class="table table-striped">
-        <thead>
+    <h2>Players List</h2>
+    <table class="table table-striped table-bordered">
+        <thead class="table-dark">
             <tr>
-                <th>Id</th>
+                <th>ID</th>
                 <th>Username</th>
                 <th>Email</th>
+                <th>Realm</th>
+                <th>Hunger</th>
+                <th>XP</th>
+                <th>Current Mode</th>
                 <th>Created At</th>
             </tr>
         </thead>
         <tbody>
             @if (Model != null && Model.Any())
             {
-                @foreach (var acct in Model)
+                @foreach (var player in Model)
                 {
                     <tr>
-                        <td>@acct.Id</td>
-                        <td>@acct.Username</td>
-                        <td>@acct.Email</td>
-                        <td>@(acct.CreatedAt?.ToString("u") ?? "")</td>
+                        <td>@player.Id</td>
+                        <td>@player.Account?.Username</td>
+                        <td>@player.Account?.Email</td>
+                        <td>@player.Realm</td>
+                        <td>@player.Hunger</td>
+                        <td><span class="badge bg-success">@player.Xp XP</span></td>
+                        <td>@player.CurrentMode?.Name</td>
+                        <td>@(player.CreatedAt?.ToString("dd/MM/yyyy HH:mm") ?? "")</td>
                     </tr>
                 }
             }
             else
             {
-                <tr><td colspan="4">No accounts</td></tr>
+                <tr>
+                    <td colspan="8" class="text-center text-muted">No players found</td>
+                </tr>
             }
         </tbody>
     </table>
 </div>
+
+<div class="mt-4">
+    <a href="/swagger" class="btn btn-primary">Open API Documentation</a>
+    <a href="/api/player" class="btn btn-secondary">View Players API</a>
+</div>
+
+<style>
+    .table {
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .badge {
+        font-size: 0.9em;
+    }
+</style>

@@ -25,55 +25,49 @@ builder.Services.AddControllersWithViews()
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// register API controllers
-builder.Services.AddControllers(); // nếu đã dùng AddControllersWithViews() thì vẫn OK
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll",
+        policy =>
+        {
+            policy.AllowAnyOrigin()
+                  .AllowAnyMethod()
+                  .AllowAnyHeader();
+        });
+});
 
 var app = builder.Build();
 
-// apply fresh DB on startup (drops and recreates the DB)
+// Seed data
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    Console.WriteLine($"Using SQLite DB at: {dbPath}");
-
-    // Apply pending migrations without deleting existing data
-    var pending = db.Database.GetPendingMigrations().ToList();
-    if (pending.Any())
-    {
-        Console.WriteLine("Applying migrations: " + string.Join(", ", pending));
-        db.Database.Migrate();
-    }
-    else
-    {
-        Console.WriteLine("No pending migrations");
-    }
-
-    WebApplication1.Data.DataSeeder.Seed(db);   // <-- đảm bảo có dòng này
+    db.Database.EnsureCreated();
+    DataSeeder.Seed(db);
 }
 
 // Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
-{
-    app.UseExceptionHandler("/Home/Error");
-    app.UseHsts();
-}
-
-// Enable Swagger in development
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+else
+{
+    app.UseHttpsRedirection();
+}
 
-app.UseHttpsRedirection();
-app.UseStaticFiles(); // serve wwwroot
-
+app.UseStaticFiles(); // Serve static files (CSS, JS, images)
 app.UseRouting();
-
+app.UseCors("AllowAll");
 app.UseAuthorization();
 
+// Map MVC routes (cho Views)
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+// Map API controllers
+app.MapControllers();
 
 app.Run();

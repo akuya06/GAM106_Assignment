@@ -1,11 +1,14 @@
 using System.ComponentModel.DataAnnotations;
 
-public class Shop
+namespace WebApplication1.Models
 {
-    [Key] public string Id { get; set; } = System.Guid.NewGuid().ToString();
-    public int? PriceXp { get; set; }
-    public string? AllowedModes { get; set; }
-    public bool IsVehicle { get; set; }
-    public string? ItemId { get; set; }
-    public Item? Item { get; set; }
+    public class Shop
+    {
+        [Key] public string Id { get; set; } = System.Guid.NewGuid().ToString();
+        public int? PriceXp { get; set; }
+        public string? AllowedModes { get; set; }
+        public bool IsVehicle { get; set; }
+        public string? ItemId { get; set; }
+        public Item? Item { get; set; }
+    }
 }

@@ -5,7 +5,7 @@
 namespace WebApplication1.Migrations
 {
     /// <inheritdoc />
-    public partial class ResetDB : Migration
+    public partial class UpdateModels : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

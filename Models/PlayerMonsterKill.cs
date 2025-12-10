@@ -1,18 +1,17 @@
-namespace WebApplication1.Models;
 using System;
 using System.ComponentModel.DataAnnotations;
 
-public class PlayerMonsterKill
+namespace WebApplication1.Models
 {
-    [Key] public string Id { get; set; } = Guid.NewGuid().ToString();
+    public class PlayerMonsterKill
+    {
+        [Key] public int Id { get; set; }
+        public int PlayerId { get; set; } // int
+        public string MonsterId { get; set; } = string.Empty;
+        public int KillCount { get; set; }
+        public DateTime? KilledAt { get; set; }
 
-    // FK to Player
-    public string? PlayerId { get; set; }
-    public Player? Player { get; set; }
-
-    // FK to Monster
-    public string? MonsterId { get; set; }
-    public Monster? Monster { get; set; }
-
-    public DateTime? KilledAt { get; set; }
+        public Player? Player { get; set; }
+        public Monster? Monster { get; set; }
+    }
 }

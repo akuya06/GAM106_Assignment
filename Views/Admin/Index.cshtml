@@ -1,0 +1,66 @@
+﻿@* filepath: d:\GAM106-ASM\Views\Admin\Index.cshtml *@
+@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<div class="container mt-4">
+    <h1>Admin Dashboard</h1>
+    <p>Quản lý dữ liệu game Minecraft</p>
+
+    <div class="row mt-4">
+        <div class="col-md-4 mb-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Accounts</h5>
+                    <p class="card-text">Quản lý tài khoản người chơi</p>
+                    <a href="@Url.Action("Accounts", "Admin")" class="btn btn-primary">Xem</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Players</h5>
+                    <p class="card-text">Quản lý nhân vật trong game</p>
+                    <a href="@Url.Action("Players", "Admin")" class="btn btn-primary">Xem</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Items</h5>
+                    <p class="card-text">Quản lý vật phẩm</p>
+                    <a href="@Url.Action("Items", "Admin")" class="btn btn-primary">Xem</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Monsters</h5>
+                    <p class="card-text">Quản lý quái vật</p>
+                    <a href="@Url.Action("Monsters", "Admin")" class="btn btn-primary">Xem</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Shop</h5>
+                    <p class="card-text">Quản lý cửa hàng</p>
+                    <a href="@Url.Action("Shop", "Admin")" class="btn btn-primary">Xem</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Transactions</h5>
+                    <p class="card-text">Lịch sử giao dịch</p>
+                    <a href="@Url.Action("Transactions", "Admin")" class="btn btn-primary">Xem</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

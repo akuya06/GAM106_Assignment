@@ -1,32 +1,36 @@
 using System.ComponentModel.DataAnnotations;
 
-public enum InventoryKind
+namespace WebApplication1.Models
 {
-    Item = 0,
-    Resource = 1
-}
+    public enum InventoryKind
+    {
+        Item = 0,
+        Resource = 1,
+        Vehicle = 2
+    }
 
-public class PlayerInventory
-{
-    [Key] public string Id { get; set; } = System.Guid.NewGuid().ToString();
+    public class PlayerInventory
+    {
+        [Key] public int Id { get; set; }
 
-    // Liên kết đến Player
-    public string? PlayerId { get; set; }
-    public Player? Player { get; set; }
+        // Liên kết đến Player
+        public int PlayerId { get; set; } // Đổi từ string sang int
+        public Player? Player { get; set; }
 
-    // Loại: Item hay Resource
-    public InventoryKind Kind { get; set; } = InventoryKind.Item;
+        // Loại: Item, Resource, hoặc Vehicle
+        public InventoryKind Kind { get; set; } = InventoryKind.Item;
 
-    // Nếu Kind == Item thì đây là itemId; nếu Resource thì là resourceId
-    public string? ItemId { get; set; }
+        // Nếu Kind == Item hoặc Vehicle thì đây là itemId; nếu Resource thì là resourceId
+        public string ItemId { get; set; } = string.Empty;
 
-    // Số lượng / stack
-    public int Quantity { get; set; } = 1;
+        // Số lượng / stack
+        public int Quantity { get; set; } = 1;
 
-    // Slot index (null nếu là resource không có slot)
-    public int? SlotIndex { get; set; }
+        // Slot index (null nếu là resource không có slot)
+        public int? SlotIndex { get; set; }
 
-    // Giữ tham chiếu tùy chọn tới Item / Resource để EF có thể map (nullable)
-    public Item? Item { get; set; }
-    public Resource? Resource { get; set; }
+        // Giữ tham chiếu tùy chọn tới Item / Resource để EF có thể map (nullable)
+        public Item? Item { get; set; }
+        public Resource? Resource { get; set; }
+    }
 }

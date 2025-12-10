@@ -11,8 +11,8 @@ using WebApplication1.Data;
 namespace WebApplication1.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251116093356_UpdateModels")]
-    partial class UpdateModels
+    [Migration("20251209164805_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -20,7 +20,7 @@ namespace WebApplication1.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.10");
 
-            modelBuilder.Entity("GameMode", b =>
+            modelBuilder.Entity("Resource", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("TEXT");
@@ -28,17 +28,60 @@ namespace WebApplication1.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("TEXT");
 
-                    b.Property<bool>("IsAdventure")
+                    b.Property<string>("IconUrl")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Resources");
+                });
+
+            modelBuilder.Entity("WebApplication1.Models.Account", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("CreatedIp")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Accounts");
+                });
+
+            modelBuilder.Entity("WebApplication1.Models.GameMode", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("CanInteractWithShop")
                         .HasColumnType("INTEGER");
 
-                    b.Property<bool>("IsCreative")
+                    b.Property<bool>("CanUseRecipes")
                         .HasColumnType("INTEGER");
 
-                    b.Property<bool>("IsSpectator")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<bool>("IsSurvival")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("Description")
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
                         .HasColumnType("TEXT");
@@ -48,7 +91,7 @@ namespace WebApplication1.Migrations
                     b.ToTable("GameModes");
                 });
 
-            modelBuilder.Entity("Item", b =>
+            modelBuilder.Entity("WebApplication1.Models.Item", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("TEXT");
@@ -60,6 +103,9 @@ namespace WebApplication1.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Description")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("IconUrl")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("ImageUrl")
@@ -82,7 +128,7 @@ namespace WebApplication1.Migrations
                     b.ToTable("Items");
                 });
 
-            modelBuilder.Entity("Monster", b =>
+            modelBuilder.Entity("WebApplication1.Models.Monster", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("TEXT");
@@ -109,7 +155,7 @@ namespace WebApplication1.Migrations
                     b.ToTable("Monsters");
                 });
 
-            modelBuilder.Entity("Player", b =>
+            modelBuilder.Entity("WebApplication1.Models.Player", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("TEXT");
@@ -141,7 +187,7 @@ namespace WebApplication1.Migrations
                     b.ToTable("Players");
                 });
 
-            modelBuilder.Entity("PlayerInventory", b =>
+            modelBuilder.Entity("WebApplication1.Models.PlayerInventory", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("TEXT");
@@ -175,175 +221,6 @@ namespace WebApplication1.Migrations
                     b.ToTable("PlayerInventory");
                 });
 
-            modelBuilder.Entity("PlayerQuest", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime?>("CompletedAt")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("PlayerId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("QuestId")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PlayerId");
-
-                    b.HasIndex("QuestId");
-
-                    b.ToTable("PlayerQuests");
-                });
-
-            modelBuilder.Entity("Quest", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("RewardItemId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int?>("RewardQuantity")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("RewardXp")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("RewardItemId");
-
-                    b.ToTable("Quests");
-                });
-
-            modelBuilder.Entity("Recipe", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("ItemId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int?>("OutputQuantity")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("RequiredModeId")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ItemId");
-
-                    b.HasIndex("RequiredModeId");
-
-                    b.ToTable("Recipes");
-                });
-
-            modelBuilder.Entity("RecipeIngredient", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int?>("Quantity")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("RecipeId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("ResourceId")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("RecipeId");
-
-                    b.HasIndex("ResourceId");
-
-                    b.ToTable("RecipeIngredient");
-                });
-
-            modelBuilder.Entity("Resource", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("IconUrl")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Resources");
-                });
-
-            modelBuilder.Entity("Shop", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("AllowedModes")
-                        .HasColumnType("TEXT");
-
-                    b.Property<bool>("IsVehicle")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("ItemId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int?>("PriceXp")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ItemId");
-
-                    b.ToTable("Shop");
-                });
-
-            modelBuilder.Entity("WebApplication1.Models.Account", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime?>("CreatedAt")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("CreatedIp")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("PasswordHash")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Username")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Accounts");
-                });
-
             modelBuilder.Entity("WebApplication1.Models.PlayerMonsterKill", b =>
                 {
                     b.Property<string>("Id")
@@ -367,22 +244,163 @@ namespace WebApplication1.Migrations
                     b.ToTable("PlayerMonsterKills");
                 });
 
-            modelBuilder.Entity("Monster", b =>
+            modelBuilder.Entity("WebApplication1.Models.PlayerQuest", b =>
                 {
-                    b.HasOne("Item", "RewardItem")
+                    b.Property<string>("Id")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("CompletedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PlayerId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("QuestId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PlayerId");
+
+                    b.HasIndex("QuestId");
+
+                    b.ToTable("PlayerQuests");
+                });
+
+            modelBuilder.Entity("WebApplication1.Models.Quest", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("RewardItemId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int?>("RewardXp")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RewardItemId");
+
+                    b.ToTable("Quests");
+                });
+
+            modelBuilder.Entity("WebApplication1.Models.Recipe", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ResultItemId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int?>("ResultQuantity")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ResultItemId");
+
+                    b.ToTable("Recipes");
+                });
+
+            modelBuilder.Entity("WebApplication1.Models.RecipeIngredient", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int?>("Quantity")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("RecipeId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ResourceId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RecipeId");
+
+                    b.HasIndex("ResourceId");
+
+                    b.ToTable("RecipeIngredient");
+                });
+
+            modelBuilder.Entity("WebApplication1.Models.Shop", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("AllowedModes")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsVehicle")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("ItemId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int?>("PriceXp")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ItemId");
+
+                    b.ToTable("Shops");
+                });
+
+            modelBuilder.Entity("WebApplication1.Models.ShopTransaction", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PlayerId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("PricePaid")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("PurchasedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ShopId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PlayerId");
+
+                    b.HasIndex("ShopId");
+
+                    b.ToTable("ShopTransactions");
+                });
+
+            modelBuilder.Entity("WebApplication1.Models.Monster", b =>
+                {
+                    b.HasOne("WebApplication1.Models.Item", "RewardItem")
                         .WithMany("MonstersRewarding")
                         .HasForeignKey("RewardItemId");
 
                     b.Navigation("RewardItem");
                 });
 
-            modelBuilder.Entity("Player", b =>
+            modelBuilder.Entity("WebApplication1.Models.Player", b =>
                 {
                     b.HasOne("WebApplication1.Models.Account", "Account")
                         .WithMany("Players")
                         .HasForeignKey("AccountId");
 
-                    b.HasOne("GameMode", "CurrentMode")
+                    b.HasOne("WebApplication1.Models.GameMode", "CurrentMode")
                         .WithMany("Players")
                         .HasForeignKey("CurrentModeId");
 
@@ -391,13 +409,13 @@ namespace WebApplication1.Migrations
                     b.Navigation("CurrentMode");
                 });
 
-            modelBuilder.Entity("PlayerInventory", b =>
+            modelBuilder.Entity("WebApplication1.Models.PlayerInventory", b =>
                 {
-                    b.HasOne("Item", "Item")
+                    b.HasOne("WebApplication1.Models.Item", "Item")
                         .WithMany()
                         .HasForeignKey("ItemId");
 
-                    b.HasOne("Player", "Player")
+                    b.HasOne("WebApplication1.Models.Player", "Player")
                         .WithMany("PlayerInventory")
                         .HasForeignKey("PlayerId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -413,14 +431,31 @@ namespace WebApplication1.Migrations
                     b.Navigation("Resource");
                 });
 
-            modelBuilder.Entity("PlayerQuest", b =>
+            modelBuilder.Entity("WebApplication1.Models.PlayerMonsterKill", b =>
                 {
-                    b.HasOne("Player", "Player")
+                    b.HasOne("WebApplication1.Models.Monster", "Monster")
+                        .WithMany()
+                        .HasForeignKey("MonsterId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("WebApplication1.Models.Player", "Player")
+                        .WithMany("MonsterKills")
+                        .HasForeignKey("PlayerId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Monster");
+
+                    b.Navigation("Player");
+                });
+
+            modelBuilder.Entity("WebApplication1.Models.PlayerQuest", b =>
+                {
+                    b.HasOne("WebApplication1.Models.Player", "Player")
                         .WithMany("PlayerQuests")
                         .HasForeignKey("PlayerId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("Quest", "Quest")
+                    b.HasOne("WebApplication1.Models.Quest", "Quest")
                         .WithMany()
                         .HasForeignKey("QuestId")
                         .OnDelete(DeleteBehavior.SetNull);
@@ -430,33 +465,27 @@ namespace WebApplication1.Migrations
                     b.Navigation("Quest");
                 });
 
-            modelBuilder.Entity("Quest", b =>
+            modelBuilder.Entity("WebApplication1.Models.Quest", b =>
                 {
-                    b.HasOne("Item", "RewardItem")
+                    b.HasOne("WebApplication1.Models.Item", "RewardItem")
                         .WithMany("QuestsRewarding")
                         .HasForeignKey("RewardItemId");
 
                     b.Navigation("RewardItem");
                 });
 
-            modelBuilder.Entity("Recipe", b =>
+            modelBuilder.Entity("WebApplication1.Models.Recipe", b =>
                 {
-                    b.HasOne("Item", "Item")
+                    b.HasOne("WebApplication1.Models.Item", "ResultItem")
                         .WithMany("RecipesProduced")
-                        .HasForeignKey("ItemId");
+                        .HasForeignKey("ResultItemId");
 
-                    b.HasOne("GameMode", "RequiredMode")
-                        .WithMany("Recipes")
-                        .HasForeignKey("RequiredModeId");
-
-                    b.Navigation("Item");
-
-                    b.Navigation("RequiredMode");
+                    b.Navigation("ResultItem");
                 });
 
-            modelBuilder.Entity("RecipeIngredient", b =>
+            modelBuilder.Entity("WebApplication1.Models.RecipeIngredient", b =>
                 {
-                    b.HasOne("Recipe", "Recipe")
+                    b.HasOne("WebApplication1.Models.Recipe", "Recipe")
                         .WithMany("Ingredients")
                         .HasForeignKey("RecipeId");
 
@@ -469,40 +498,43 @@ namespace WebApplication1.Migrations
                     b.Navigation("Resource");
                 });
 
-            modelBuilder.Entity("Shop", b =>
+            modelBuilder.Entity("WebApplication1.Models.Shop", b =>
                 {
-                    b.HasOne("Item", "Item")
+                    b.HasOne("WebApplication1.Models.Item", "Item")
                         .WithMany("Shops")
                         .HasForeignKey("ItemId");
 
                     b.Navigation("Item");
                 });
 
-            modelBuilder.Entity("WebApplication1.Models.PlayerMonsterKill", b =>
+            modelBuilder.Entity("WebApplication1.Models.ShopTransaction", b =>
                 {
-                    b.HasOne("Monster", "Monster")
+                    b.HasOne("WebApplication1.Models.Player", "Player")
                         .WithMany()
-                        .HasForeignKey("MonsterId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.HasOne("Player", "Player")
-                        .WithMany("MonsterKills")
                         .HasForeignKey("PlayerId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.Navigation("Monster");
+                    b.HasOne("WebApplication1.Models.Shop", "Shop")
+                        .WithMany()
+                        .HasForeignKey("ShopId")
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("Player");
+
+                    b.Navigation("Shop");
                 });
 
-            modelBuilder.Entity("GameMode", b =>
+            modelBuilder.Entity("WebApplication1.Models.Account", b =>
                 {
                     b.Navigation("Players");
-
-                    b.Navigation("Recipes");
                 });
 
-            modelBuilder.Entity("Item", b =>
+            modelBuilder.Entity("WebApplication1.Models.GameMode", b =>
+                {
+                    b.Navigation("Players");
+                });
+
+            modelBuilder.Entity("WebApplication1.Models.Item", b =>
                 {
                     b.Navigation("MonstersRewarding");
 
@@ -513,7 +545,7 @@ namespace WebApplication1.Migrations
                     b.Navigation("Shops");
                 });
 
-            modelBuilder.Entity("Player", b =>
+            modelBuilder.Entity("WebApplication1.Models.Player", b =>
                 {
                     b.Navigation("MonsterKills");
 
@@ -522,14 +554,9 @@ namespace WebApplication1.Migrations
                     b.Navigation("PlayerQuests");
                 });
 
-            modelBuilder.Entity("Recipe", b =>
+            modelBuilder.Entity("WebApplication1.Models.Recipe", b =>
                 {
                     b.Navigation("Ingredients");
-                });
-
-            modelBuilder.Entity("WebApplication1.Models.Account", b =>
-                {
-                    b.Navigation("Players");
                 });
 #pragma warning restore 612, 618
         }

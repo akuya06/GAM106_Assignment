@@ -14,7 +14,7 @@ namespace WebApplication1.Data
         public DbSet<GameMode> GameModes { get; set; }
         public DbSet<Player> Players { get; set; }
         public DbSet<Item> Items { get; set; }
-        public DbSet<Shop> Shop { get; set; }
+        public DbSet<Shop> Shops { get; set; }
         public DbSet<Monster> Monsters { get; set; }
         public DbSet<Quest> Quests { get; set; }
         public DbSet<Resource> Resources { get; set; }
@@ -22,6 +22,7 @@ namespace WebApplication1.Data
         public DbSet<PlayerMonsterKill> PlayerMonsterKills { get; set; }
         public DbSet<PlayerInventory> PlayerInventory { get; set; }
         public DbSet<PlayerQuest> PlayerQuests { get; set; }
+        public DbSet<ShopTransaction> ShopTransactions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -72,6 +73,20 @@ namespace WebApplication1.Data
                 entity.HasOne(pq => pq.Quest)
                       .WithMany()
                       .HasForeignKey(pq => pq.QuestId)
+                      .OnDelete(DeleteBehavior.SetNull);
+            });
+
+            modelBuilder.Entity<ShopTransaction>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.HasOne(e => e.Player)
+                      .WithMany()
+                      .HasForeignKey(e => e.PlayerId)
+                      .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(e => e.Shop)
+                      .WithMany()
+                      .HasForeignKey(e => e.ShopId)
                       .OnDelete(DeleteBehavior.SetNull);
             });
 
