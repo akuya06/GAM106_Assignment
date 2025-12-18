@@ -60,6 +60,37 @@ public class AccountController : ControllerBase
         return CreatedAtAction(nameof(GetAccount), new { id = account.Id }, account);
     }
 
+        // POST: api/Account/login
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginRequest request)
+        {
+            if (string.IsNullOrEmpty(request.Username) || string.IsNullOrEmpty(request.Password))
+            {
+                return BadRequest(new { message = "Username and password are required" });
+            }
+
+            var account = await _context.Accounts.FirstOrDefaultAsync(a => a.Username == request.Username);
+            if (account == null)
+            {
+                return Unauthorized(new { message = "Invalid username or password" });
+            }
+
+            string passwordHash = HashPassword(request.Password);
+            if (account.PasswordHash != request.Password)
+            {
+                return Unauthorized(new { message = "Invalid username or password" });
+            }
+
+            // Return account info without password hash
+            return Ok(new {
+                account.Id,
+                account.Username,
+                account.Email,
+                account.CreatedAt,
+                account.CreatedIp
+            });
+        }
+
     // PUT: api/Account/5
     [HttpPut("{id}")]
     public async Task<IActionResult> PutAccount(string id, Account account)
@@ -207,4 +238,10 @@ public class ChangePasswordRequest
 public class ResetPasswordRequest
 {
     public string NewPassword { get; set; } = string.Empty;
+}
+
+public class LoginRequest
+{
+    public string Username { get; set; } = string.Empty;
+    public string Password { get; set; } = string.Empty;
 }
