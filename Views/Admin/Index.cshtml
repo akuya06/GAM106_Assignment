@@ -63,4 +63,157 @@
             </div>
         </div>
     </div>
+    <div class="col-12 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Thao tác nhanh 10 yêu cầu quản trị</h5>
+                <div class="d-flex flex-wrap gap-2">
+                    <button class="btn btn-outline-secondary" onclick="callApi1()">1. Lấy tất cả tài nguyên</button>
+                    <button class="btn btn-outline-secondary" onclick="callApi2()">2. Người chơi theo chế độ</button>
+                    <button class="btn btn-outline-secondary" onclick="callApi3()">3. Vũ khí giá > 100 XP</button>
+                    <button class="btn btn-outline-secondary" onclick="callApi4()">4. Item mua được theo XP</button>
+                    <button class="btn btn-outline-secondary" onclick="callApi5()">5. Item tên 'khóa' > 500 XP</button>
+                    <button class="btn btn-outline-secondary" onclick="callApi6()">6. Giao dịch của người chơi</button>
+                    <button class="btn btn-outline-secondary" onclick="callApi7()">7. Thêm item mới</button>
+                    <button class="btn btn-outline-secondary" onclick="callApi8()">8. Đổi mật khẩu</button>
+                    <button class="btn btn-outline-secondary" onclick="callApi9()">9. Top item mua nhiều</button>
+                    <button class="btn btn-outline-secondary" onclick="callApi10()">10. Thống kê mua hàng</button>
+                </div>
+                <small class="text-muted">Kết quả sẽ hiển thị bằng alert hoặc console.log</small>
+            </div>
+        </div>
+    </div>
 </div>
+
+<script>
+const BASE_API = "/api";
+// 1. Lấy tất cả tài nguyên
+function callApi1() {
+    fetch(`${BASE_API}/Resource`)
+      .then(async r => {
+        if (!r.ok) {
+          let err = await r.text();
+          throw new Error(err || r.statusText);
+        }
+        return r.json();
+      })
+      .then(d => alert(JSON.stringify(d, null, 2)))
+      .catch(e => alert(e));
+}
+// 2. Lấy tất cả người chơi theo chế độ chơi
+function callApi2() {
+    let mode = prompt("Nhập tên chế độ (ví dụ: Survival)", "Survival");
+    if (!mode) return;
+    fetch(`${BASE_API}/Player/mode/${mode}`)
+      .then(async r => {
+        if (!r.ok) throw new Error(await r.text() || r.statusText);
+        return r.json();
+      })
+      .then(d => alert(JSON.stringify(d, null, 2)))
+      .catch(e => alert(e));
+}
+// 3. Lấy tất cả vũ khí có giá trên 100 XP
+function callApi3() {
+    fetch(`${BASE_API}/Shop/weapons?minXp=100`)
+      .then(async r => {
+        if (!r.ok) {
+          let err = await r.text();
+          throw new Error(err || r.statusText);
+        }
+        return r.json();
+      })
+      .then(d => alert(JSON.stringify(d, null, 2)))
+      .catch(e => alert(e));
+}
+// 4. Lấy các item mà người chơi có thể mua với số XP hiện tại
+function callApi4() {
+    let playerId = prompt("Nhập PlayerId");
+    if (!playerId) return;
+    fetch(`${BASE_API}/Shop/affordable/${playerId}`)
+      .then(async r => {
+        if (!r.ok) {
+          let err = await r.text();
+          throw new Error(err || r.statusText);
+        }
+        return r.json();
+      })
+      .then(d => alert(JSON.stringify(d, null, 2)))
+      .catch(e => alert(e));
+}
+// 5. Lấy các item có tên chứa từ 'khóa' và giá trên 500 XP
+function callApi5() {
+    fetch(`${BASE_API}/Shop/search?keyword=khóa&minXp=500`)
+      .then(async r => {
+        if (!r.ok) {
+          let err = await r.text();
+          throw new Error(err || r.statusText);
+        }
+        return r.json();
+      })
+      .then(d => alert(JSON.stringify(d, null, 2)))
+      .catch(e => alert(e));
+}
+// 6. Lấy tất cả giao dịch mua item và phương tiện của một người chơi
+function callApi6() {
+    let playerId = prompt("Nhập PlayerId");
+    if (!playerId) return;
+    fetch(`${BASE_API}/ShopTransaction/player/${playerId}/detailed`)
+      .then(async r => {
+        if (!r.ok) {
+          let err = await r.text();
+          throw new Error(err || r.statusText);
+        }
+        return r.json();
+      })
+      .then(d => alert(JSON.stringify(d, null, 2)))
+      .catch(e => alert(e));
+}
+// 7. Thêm thông tin một item mới
+function callApi7() {
+    let name = prompt("Tên item mới");
+    if (!name) return;
+    fetch(`${BASE_API}/Item`, {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({ name })
+    }).then(r=>r.json()).then(d=>alert(JSON.stringify(d,null,2))).catch(e=>alert(e));
+}
+// 8. Cập nhật mật khẩu tài khoản
+function callApi8() {
+    let id = prompt("Nhập AccountId");
+    let oldPassword = prompt("Nhập mật khẩu cũ");
+    let newPassword = prompt("Nhập mật khẩu mới");
+    if (!id || !oldPassword || !newPassword) return;
+    fetch(`${BASE_API}/Account/${id}/change-password`, {
+        method: "PUT",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({ oldPassword, newPassword })
+    }).then(r=>r.json()).then(d=>alert(JSON.stringify(d,null,2))).catch(e=>alert(e));
+}
+// 9. Lấy danh sách các item được mua nhiều nhất
+function callApi9() {
+    fetch(`${BASE_API}/ShopTransaction/top-items?limit=10`)
+      .then(async r => {
+        if (!r.ok) {
+          let err = await r.text();
+          throw new Error(err || r.statusText);
+        }
+        return r.json();
+      })
+      .then(d => alert(JSON.stringify(d, null, 2)))
+      .catch(e => alert(e));
+}
+// 10. Lấy danh sách tất cả người chơi và số lần họ đã mua hàng
+function callApi10() {
+    fetch(`${BASE_API}/Player/purchase-stats`)
+      .then(async r => {
+        if (!r.ok) {
+          let err = await r.text();
+          throw new Error(err || r.statusText);
+        }
+        return r.json();
+      })
+      .then(d => alert(JSON.stringify(d, null, 2)))
+      .catch(e => alert(e));
+}
+</script>

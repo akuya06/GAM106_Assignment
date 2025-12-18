@@ -16,6 +16,7 @@
                 <th>Username</th>
                 <th>Email</th>
                 <th>Created At</th>
+                   <th>Password</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -27,6 +28,7 @@
                     <td>@account.Username</td>
                     <td>@account.Email</td>
                     <td>@account.CreatedAt?.ToString("yyyy-MM-dd HH:mm")</td>
+                       <td>@account.PasswordHash</td>
                     <td>
                         <button class="btn btn-sm btn-warning" onclick="openEditModal('@account.Id', '@account.Username', '@account.Email')">Edit</button>
                         <button class="btn btn-sm btn-danger" onclick="deleteItem('/api/Account/@account.Id')">Delete</button>
